@@ -8,7 +8,7 @@ run.pivotal.io
 # Creating the binary
 To create a jar file to deploy to PCF run install or package with the skip tests flag (for brevity sake so are no tests in this sample).
 
-````shell
+```shell
 Luke-Shannons-Macbook-Pro:simple-pcf-application lshannon$ mvn install -DskipTests
 [INFO] Scanning for projects...
 [INFO]                                                                         
@@ -49,12 +49,12 @@ Luke-Shannons-Macbook-Pro:simple-pcf-application lshannon$ mvn install -DskipTes
 [INFO] Finished at: 2015-05-26T23:25:59-04:00
 [INFO] Final Memory: 16M/310M
 [INFO] ------------------------------------------------------------------------
-````
+```
 
 # Configuring the client to deploy
 The client can be obtained from run.pivotal.io after logging in to the run.pivotal.io console.
 Next the following steps can be executed to set the end point.
-````shell
+```shell
 Luke-Shannons-Macbook-Pro:git lshannon$ cf api api.run.pivotal.io
 Setting api endpoint to api.run.pivotal.io...
 OK
@@ -64,9 +64,9 @@ API endpoint:   https://api.run.pivotal.io (API version: 2.27.0)
 User:           lshannon@pivotal.io   
 Org:            lshannon-org1   
 Space:          development   
-````
+```
 Next we will set up our credentials to log in.
-````shell
+```shell
 Luke-Shannons-Macbook-Pro:git lshannon$ cf login -a https://api.run.pivotal.io
 API endpoint: https://api.run.pivotal.io
 
@@ -92,19 +92,19 @@ API endpoint:   https://api.run.pivotal.io (API version: 2.27.0)
 User:           lshannon@pivotal.io   
 Org:            toronto-pivotal-meetup   
 Space:          development   
-````
+```
 Notice how the Org within the space was selected.
 
 We can now test the CLI to see the apps.
-````shell
+```shell
 Luke-Shannons-Macbook-Pro:git lshannon$ cf apps
 Getting apps in org toronto-pivotal-meetup / space development as lshannon@pivotal.io...
 OK
 
 No apps found
-````
+```
 We can also see the build packs.
-````shell
+```shell
 Luke-Shannons-Macbook-Pro:git lshannon$ cf buildpacks
 Getting buildpacks...
 
@@ -171,19 +171,19 @@ stack: cflinuxfs2
 
      state     since                    cpu    memory         disk           details   
 #0   running   2015-05-26 11:42:09 PM   0.0%   467.2M of 1G   131.1M of 1G   
-````
+```
 # Working with the CLI on the Running Application
 To verify it is running the apps command can be used
-````shell
+```shell
 Luke-Shannons-Macbook-Pro:simple-pcf-application lshannon$ cf apps
 Getting apps in org toronto-pivotal-meetup / space development as lshannon@pivotal.io...
 OK
 
 name                        requested state   instances   memory   disk   urls   
 toronto-meetup-simple-app   started           1/1         1G       1G     toronto-meetup-simple-app.cfapps.io  
-````
+```
 To start and stop the application
-````shell
+```shell
 Luke-Shannons-Macbook-Pro:simple-pcf-application lshannon$ cf stop toronto-meetup-simple-app
 Stopping app toronto-meetup-simple-app in org toronto-pivotal-meetup / space development as lshannon@pivotal.io...
 OK
@@ -215,9 +215,9 @@ stack: cflinuxfs2
      state     since                    cpu    memory         disk           details   
 #0   running   2015-05-26 11:51:47 PM   0.0%   434.3M of 1G   131.1M of 1G      
 Luke-Shannons-Macbook-Pro:simple-pcf-application lshannon$ 
-````
+```
 To scale the application
-````shell
+```shell
 Luke-Shannons-Macbook-Pro:simple-pcf-application lshannon$ cf scale toronto-meetup-simple-app -i 2
 Scaling app toronto-meetup-simple-app in org toronto-pivotal-meetup / space development as lshannon@pivotal.io...
 OK
@@ -228,18 +228,18 @@ OK
 memory: 1G
 disk: 1G
 instances: 2
-````
+```
 # Basic Trouble Shooting
 
 To tail the log for this application.
-````shell
+```shell
 Luke-Shannons-Macbook-Pro:simple-pcf-application lshannon$ cf logs toronto-meetup-simple-app
 Connected, tailing logs for app toronto-meetup-simple-app in org toronto-pivotal-meetup / space development as lshannon@pivotal.io...
 
 2015-05-26T23:46:35.73-0400 [RTR/1]      OUT toronto-meetup-simple-app.cfapps.io - [27/05/2015:03:46:35 +0000] "GET / HTTP/1.1" 200 0 32 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.152 Safari/537.36" 10.10.2.122:6906 x_forwarded_for:"135.23.188.178" vcap_request_id:7a1e358a-4726-4264-7097-28ca711dcb9a response_time:0.010188244 app_id:18ee4e21-014c-4f6c-8774-01286ce378b4
-````
+```
 To view the recent log entries (the entire log not shown)
-````shell
+```shell
 Luke-Shannons-Macbook-Pro:simple-pcf-application lshannon$ cf logs toronto-meetup-simple-app --recent
 Connected, dumping recent logs for app toronto-meetup-simple-app in org toronto-pivotal-meetup / space development as lshannon@pivotal.io...
 
@@ -274,5 +274,66 @@ For more information on the the CLI commands:
 http://docs.pivotal.io/pivotalcf/devguide/installcf/whats-new-v6.html
 
 # Using the manifest file
+A manifest file can describe everything PCF needs to know about your application in one location.
+```shell
+---
+applications:
+- name: toronto-meetup-simple-app
+  memory: 256M
+  instances: 2
+  host: toronto-meetup-simple-app
+  path: target/simple-pcf-application-0.0.1-SNAPSHOT.jar
+```
+With this file in the root of the project a simple 'cf push' will tell the CLI to use the manifest file.
+```shell
+Luke-Shannons-Macbook-Pro:simple-pcf-application lshannon$ cf push
+Using manifest file /Users/lshannon/Documents/git/simple-pcf-application/simple-pcf-application/manifest.yml
 
+Updating app toronto-meetup-simple-app in org toronto-pivotal-meetup / space development as lshannon@pivotal.io...
+OK
+
+Using route toronto-meetup-simple-app.cfapps.io
+Uploading toronto-meetup-simple-app...
+Uploading app files from: /Users/lshannon/Documents/git/simple-pcf-application/simple-pcf-application/target/simple-pcf-application-0.0.1-SNAPSHOT.jar
+Uploading 527.8K, 93 files
+Done uploading               
+OK
+
+Stopping app toronto-meetup-simple-app in org toronto-pivotal-meetup / space development as lshannon@pivotal.io...
+OK
+
+Starting app toronto-meetup-simple-app in org toronto-pivotal-meetup / space development as lshannon@pivotal.io...
+-----> Downloaded app package (11M)
+-----> Downloaded app buildpack cache (44M)
+-----> Java Buildpack Version: v3.0 | https://github.com/cloudfoundry/java-buildpack.git#3bd15e1
+-----> Downloading Open Jdk JRE 1.8.0_45 from https://download.run.pivotal.io/openjdk/trusty/x86_64/openjdk-1.8.0_45.tar.gz (found in cache)
+       Expanding Open Jdk JRE to .java-buildpack/open_jdk_jre (1.2s)
+-----> Downloading Spring Auto Reconfiguration 1.7.0_RELEASE from https://download.run.pivotal.io/auto-reconfiguration/auto-reconfiguration-1.7.0_RELEASE.jar (found in cache)
+
+-----> Uploading droplet (55M)
+
+0 of 2 instances running, 2 starting
+2 of 2 instances running
+
+App started
+
+
+OK
+
+App toronto-meetup-simple-app was started using this command `SERVER_PORT=$PORT $PWD/.java-buildpack/open_jdk_jre/bin/java -cp $PWD/.:$PWD/.java-buildpack/spring_auto_reconfiguration/spring_auto_reconfiguration-1.7.0_RELEASE.jar -Djava.io.tmpdir=$TMPDIR -XX:OnOutOfMemoryError=$PWD/.java-buildpack/open_jdk_jre/bin/killjava.sh -Xmx160M -Xms160M -XX:MaxMetaspaceSize=64M -XX:MetaspaceSize=64M -Xss853K org.springframework.boot.loader.JarLauncher`
+
+Showing health and status for app toronto-meetup-simple-app in org toronto-pivotal-meetup / space development as lshannon@pivotal.io...
+OK
+
+requested state: started
+instances: 2/2
+usage: 256M x 2 instances
+urls: toronto-meetup-simple-app.cfapps.io
+last uploaded: Wed May 27 04:01:07 UTC 2015
+stack: cflinuxfs2
+
+     state     since                    cpu    memory           disk           details   
+#0   running   2015-05-27 12:01:52 AM   0.0%   248.3M of 256M   131.1M of 1G      
+#1   running   2015-05-27 12:01:54 AM   0.0%   224.6M of 256M   131.1M of 1G 
+```
 
