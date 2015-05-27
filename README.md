@@ -122,6 +122,8 @@ Luke-Shannons-Macbook-Pro:git lshannon$
 
 ````
 # Pushing the application
+For more information on the push command:
+http://docs.pivotal.io/pivotalcf/devguide/installcf/whats-new-v6.html#push
 
 # Using the manifest file
 
