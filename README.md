@@ -363,3 +363,90 @@ cf push $BUILD_NUMBER-test -p simple-pcf-application/target/simple-pcf-applicati
 $CF_PASSWORD is a Build Parameter created for this job. $BUILD_NUMBER is a built in Jenkins variable that is incremented with each build.
 
 The result of this is, if the code is successfully built with Maven, the artifact is pushed to PCF using the manifest file resulting in a fully configured and running application.
+
+# simple-data-pcf-application
+Similar to above, this is a Spring Boot REST application. However this application takes a String value through a GET request and stores it in a MySQL DB. It also provides an end point to get all the messages in the DB.
+
+Thanks to Spring Boot's JDBC starter, the connection details are specified in the application.properties file, along with the SQL.
+
+```javascript
+spring.datasource.url=jdbc:mysql://localhost:3306/messages
+spring.datasource.username=root
+spring.datasource.password=
+spring.datasource.driver-class-name=com.mysql.jdbc.Driver
+insert.message=INSERT INTO message (message) VALUES (?)
+select.message=SELECT message FROM message
+schema.message=CREATE TABLE IF NOT exists message (id int(11) NOT NULL AUTO_INCREMENT, message varchar(45) DEFAULT NULL, PRIMARY KEY (`id`)) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+```
+
+For local testing a MySQL Database is required with a DB named messages created.
+
+Upon starting the application locally, a value can be added like this:
+http://127.0.0.1:8080/set?message=ice cube
+
+Values can be looked up like this:
+http://127.0.0.1:8080/get
+
+The manifest file contains the following configuration:
+```javascript
+applications:
+- name: simple-data-pcf-application
+  memory: 512M
+  path: target/simple-data-pcf-application-0.0.1-SNAPSHOT.jar
+  host: simple-data-pcf-application
+services:
+- mysql-datasource
+```
+A MySQL Service called 'mysql-datasource' needs to be created in the organization and space that the CLI is pointing too.
+
+With this manifest a simple 'cf push' will result in the following output:
+```shell
+piv-wifi-19-185:simple-data-pcf-application lshannon$ cf push
+Using manifest file /Users/lshannon/Documents/git/simple-pcf-application/simple-data-pcf-application/manifest.yml
+
+Updating app simple-data-pcf-application in org toronto-pivotal-meetup / space development as lshannon@pivotal.io...
+OK
+
+Using route simple-data-pcf-application.cfapps.io
+Uploading simple-data-pcf-application...
+Uploading app files from: /Users/lshannon/Documents/git/simple-pcf-application/simple-data-pcf-application/target/simple-data-pcf-application-0.0.1-SNAPSHOT.jar
+Uploading 574.6K, 96 files
+Done uploading               
+OK
+Binding service mysql-datasource to app simple-data-pcf-application in org toronto-pivotal-meetup / space development as lshannon@pivotal.io...
+OK
+
+Stopping app simple-data-pcf-application in org toronto-pivotal-meetup / space development as lshannon@pivotal.io...
+OK
+
+Starting app simple-data-pcf-application in org toronto-pivotal-meetup / space development as lshannon@pivotal.io...
+-----> Downloaded app package (13M)
+-----> Downloaded app buildpack cache (44M)
+-----> Java Buildpack Version: v3.0 | https://github.com/cloudfoundry/java-buildpack.git#3bd15e1
+-----> Downloading Open Jdk JRE 1.8.0_45 from https://download.run.pivotal.io/openjdk/trusty/x86_64/openjdk-1.8.0_45.tar.gz (found in cache)
+       Expanding Open Jdk JRE to .java-buildpack/open_jdk_jre (1.3s)
+-----> Downloading Spring Auto Reconfiguration 1.7.0_RELEASE from https://download.run.pivotal.io/auto-reconfiguration/auto-reconfiguration-1.7.0_RELEASE.jar (found in cache)
+
+-----> Uploading droplet (57M)
+
+0 of 1 instances running, 1 starting
+1 of 1 instances running
+
+App started
+
+
+OK
+
+App simple-data-pcf-application was started using this command `SERVER_PORT=$PORT $PWD/.java-buildpack/open_jdk_jre/bin/java -cp $PWD/.:$PWD/.java-buildpack/spring_auto_reconfiguration/spring_auto_reconfiguration-1.7.0_RELEASE.jar -Djava.io.tmpdir=$TMPDIR -XX:OnOutOfMemoryError=$PWD/.java-buildpack/open_jdk_jre/bin/killjava.sh -Xmx382293K -Xms382293K -XX:MaxMetaspaceSize=64M -XX:MetaspaceSize=64M -Xss995K org.springframework.boot.loader.JarLauncher`
+
+Showing health and status for app simple-data-pcf-application in org toronto-pivotal-meetup / space development as lshannon@pivotal.io...
+OK
+
+requested state: started
+instances: 1/1
+usage: 512M x 1 instances
+urls: simple-data-pcf-application.cfapps.io
+last uploaded: Wed May 27 21:20:38 UTC 2015
+stack: cflinuxfs2
+```
+PCF binds this application to the DB, binding in all relevant parameters at run time. The application runs in PCF, just as it did locally, with a simple push command.
