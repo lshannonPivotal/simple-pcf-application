@@ -3,5 +3,4 @@ applications:
 - name: toronto-meetup-simple-app
   memory: 256M
   instances: 2
-  host: toronto-meetup-simple-app
   path: target/simple-pcf-application-0.0.1-SNAPSHOT.jar
