@@ -1,0 +1,7 @@
+applications:
+- name: simple-data-pcf-application
+  memory: 512M
+  path: target/simple-data-pcf-application-0.0.1-SNAPSHOT.jar
+  host: simple-data-pcf-application
+services:
+- mysql-datasource
