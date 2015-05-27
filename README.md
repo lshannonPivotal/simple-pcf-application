@@ -229,6 +229,15 @@ memory: 1G
 disk: 1G
 instances: 2
 ```
+And finally how to delete the application.
+```shell
+Luke-Shannons-Macbook-Pro:simple-pcf-application lshannon$ cf delete toronto-meetup-simple-app
+
+Really delete the app toronto-meetup-simple-app?> yes
+Deleting app toronto-meetup-simple-app in org toronto-pivotal-meetup / space development as lshannon@pivotal.io...
+OK
+```
+
 # Basic Trouble Shooting
 
 To tail the log for this application.
