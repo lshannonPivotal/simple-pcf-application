@@ -52,6 +52,76 @@ Luke-Shannons-Macbook-Pro:simple-pcf-application lshannon$ mvn install -DskipTes
 ````
 
 # Configuring the client to deploy
+The client can be obtained from run.pivotal.io after logging in to the run.pivotal.io console.
+Next the following steps can be executed to set the end point.
+````shell
+Luke-Shannons-Macbook-Pro:git lshannon$ cf api api.run.pivotal.io
+Setting api endpoint to api.run.pivotal.io...
+OK
+
+                   
+API endpoint:   https://api.run.pivotal.io (API version: 2.27.0)   
+User:           lshannon@pivotal.io   
+Org:            lshannon-org1   
+Space:          development   
+````
+Next we will set up our credentials to log in.
+````shell
+Luke-Shannons-Macbook-Pro:git lshannon$ cf login -a https://api.run.pivotal.io
+API endpoint: https://api.run.pivotal.io
+
+Email> lshannon@pivotal.io
+
+Password> 
+Authenticating...
+OK
+
+Select an org (or press enter to skip):
+1. Northeast / Canada
+2. lshannon-org1
+3. toronto-pivotal-meetup
+
+Org> 3
+Targeted org toronto-pivotal-meetup
+
+Targeted space development
+
+
+                   
+API endpoint:   https://api.run.pivotal.io (API version: 2.27.0)   
+User:           lshannon@pivotal.io   
+Org:            toronto-pivotal-meetup   
+Space:          development   
+````
+Notice how the Org within the space was selected.
+
+We can now test the CLI to see the apps.
+````shell
+Luke-Shannons-Macbook-Pro:git lshannon$ cf apps
+Getting apps in org toronto-pivotal-meetup / space development as lshannon@pivotal.io...
+OK
+
+No apps found
+````
+We can also see the build packs.
+````shell
+Luke-Shannons-Macbook-Pro:git lshannon$ cf buildpacks
+Getting buildpacks...
+
+buildpack              position   enabled   locked   filename   
+ruby_buildpack         1          true      false    ruby-including-unsupported_buildpack-cached-v1.4.1.zip   
+nodejs_buildpack       2          true      false    nodejs-including-unsupported_buildpack-cached-v1.3.1.zip   
+java_buildpack         3          true      false    java-buildpack-v3.0.zip   
+go_buildpack           4          true      false    go-including-unsupported_buildpack-cached-v1.3.1.zip   
+liberty_buildpack      5          true      false    liberty_buildpack.zip   
+python_buildpack       6          true      false    python-including-unsupported_buildpack-cached-v1.3.1.zip   
+php_buildpack          7          true      false    php-including-unsupported_buildpack-cached-v3.2.1.zip   
+staticfile_buildpack   8          true      false    staticfile_buildpack-cached-v1.0.0.zip   
+binary_buildpack       9          true      false    binary_buildpack-cached-v1.0.0.zip   
+Luke-Shannons-Macbook-Pro:git lshannon$ 
+
+````
+# Pushing the application
 
 # Using the manifest file
 
