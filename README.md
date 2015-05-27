@@ -345,4 +345,6 @@ stack: cflinuxfs2
 #0   running   2015-05-27 12:01:52 AM   0.0%   248.3M of 256M   131.1M of 1G      
 #1   running   2015-05-27 12:01:54 AM   0.0%   224.6M of 256M   131.1M of 1G 
 ```
+# Integrating with Jenkins
+Although there is a plugin for CF available for Jenkins, it did not work out of the box using the manifest file. More exploration needs to be done on this plugin. In the meantime if the CF CLI is install on the server running Jenkins, a Jenkins job can easily add a step to deploy the application for testing.
 
