@@ -1,5 +1,5 @@
 # Introduction
-This is a simple Spring Boot Rest Application for sample deployment to PCF
+This is a simple Spring Boot Rest Application for sample deployment to PCF. Some basic commands with PCF's Command Line Interface (CLI) are also explored.
 
 # Prerequisites
 A PCF Account is required. This can be obtained free of charge by signing up at:
