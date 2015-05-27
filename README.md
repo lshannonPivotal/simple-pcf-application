@@ -122,8 +122,156 @@ Luke-Shannons-Macbook-Pro:git lshannon$
 
 ````
 # Pushing the application
-For more information on the push command:
-http://docs.pivotal.io/pivotalcf/devguide/installcf/whats-new-v6.html#push
+To get the application on to PCF.
+````shell
+Luke-Shannons-Macbook-Pro:simple-pcf-application lshannon$ cf push toronto-meetup-simple-app  -p target/simple-pcf-application-0.0.1-SNAPSHOT.jar 
+Creating app toronto-meetup-simple-app in org toronto-pivotal-meetup / space development as lshannon@pivotal.io...
+OK
+
+Creating route toronto-meetup-simple-app.cfapps.io...
+OK
+
+Binding toronto-meetup-simple-app.cfapps.io to toronto-meetup-simple-app...
+OK
+
+Uploading toronto-meetup-simple-app...
+Uploading app files from: target/simple-pcf-application-0.0.1-SNAPSHOT.jar
+Uploading 527.8K, 93 files
+Done uploading               
+OK
+
+Starting app toronto-meetup-simple-app in org toronto-pivotal-meetup / space development as lshannon@pivotal.io...
+-----> Downloaded app package (11M)
+-----> Java Buildpack Version: v3.0 | https://github.com/cloudfoundry/java-buildpack.git#3bd15e1
+-----> Downloading Open Jdk JRE 1.8.0_45 from https://download.run.pivotal.io/openjdk/trusty/x86_64/openjdk-1.8.0_45.tar.gz (1.0s)
+       Expanding Open Jdk JRE to .java-buildpack/open_jdk_jre (1.3s)
+-----> Downloading Spring Auto Reconfiguration 1.7.0_RELEASE from https://download.run.pivotal.io/auto-reconfiguration/auto-reconfiguration-1.7.0_RELEASE.jar (0.0s)
+
+-----> Uploading droplet (55M)
+
+0 of 1 instances running, 1 starting
+1 of 1 instances running
+
+App started
+
+
+OK
+
+App toronto-meetup-simple-app was started using this command `SERVER_PORT=$PORT $PWD/.java-buildpack/open_jdk_jre/bin/java -cp $PWD/.:$PWD/.java-buildpack/spring_auto_reconfiguration/spring_auto_reconfiguration-1.7.0_RELEASE.jar -Djava.io.tmpdir=$TMPDIR -XX:OnOutOfMemoryError=$PWD/.java-buildpack/open_jdk_jre/bin/killjava.sh -Xmx768M -Xms768M -XX:MaxMetaspaceSize=104857K -XX:MetaspaceSize=104857K -Xss1M org.springframework.boot.loader.JarLauncher`
+
+Showing health and status for app toronto-meetup-simple-app in org toronto-pivotal-meetup / space development as lshannon@pivotal.io...
+OK
+
+requested state: started
+instances: 1/1
+usage: 1G x 1 instances
+urls: toronto-meetup-simple-app.cfapps.io
+last uploaded: Wed May 27 03:41:28 UTC 2015
+stack: cflinuxfs2
+
+     state     since                    cpu    memory         disk           details   
+#0   running   2015-05-26 11:42:09 PM   0.0%   467.2M of 1G   131.1M of 1G   
+````
+# Working with the CLI on the Running Application
+To verify it is running the apps command can be used
+````shell
+Luke-Shannons-Macbook-Pro:simple-pcf-application lshannon$ cf apps
+Getting apps in org toronto-pivotal-meetup / space development as lshannon@pivotal.io...
+OK
+
+name                        requested state   instances   memory   disk   urls   
+toronto-meetup-simple-app   started           1/1         1G       1G     toronto-meetup-simple-app.cfapps.io  
+````
+To start and stop the application
+````shell
+Luke-Shannons-Macbook-Pro:simple-pcf-application lshannon$ cf stop toronto-meetup-simple-app
+Stopping app toronto-meetup-simple-app in org toronto-pivotal-meetup / space development as lshannon@pivotal.io...
+OK
+
+Luke-Shannons-Macbook-Pro:simple-pcf-application lshannon$ cf start toronto-meetup-simple-app
+Starting app toronto-meetup-simple-app in org toronto-pivotal-meetup / space development as lshannon@pivotal.io...
+
+0 of 1 instances running, 1 starting
+0 of 1 instances running, 1 starting
+1 of 1 instances running
+
+App started
+
+
+OK
+
+App toronto-meetup-simple-app was started using this command `SERVER_PORT=$PORT $PWD/.java-buildpack/open_jdk_jre/bin/java -cp $PWD/.:$PWD/.java-buildpack/spring_auto_reconfiguration/spring_auto_reconfiguration-1.7.0_RELEASE.jar -Djava.io.tmpdir=$TMPDIR -XX:OnOutOfMemoryError=$PWD/.java-buildpack/open_jdk_jre/bin/killjava.sh -Xmx768M -Xms768M -XX:MaxMetaspaceSize=104857K -XX:MetaspaceSize=104857K -Xss1M org.springframework.boot.loader.JarLauncher`
+
+Showing health and status for app toronto-meetup-simple-app in org toronto-pivotal-meetup / space development as lshannon@pivotal.io...
+OK
+
+requested state: started
+instances: 1/1
+usage: 1G x 1 instances
+urls: toronto-meetup-simple-app.cfapps.io
+last uploaded: Wed May 27 03:41:28 UTC 2015
+stack: cflinuxfs2
+
+     state     since                    cpu    memory         disk           details   
+#0   running   2015-05-26 11:51:47 PM   0.0%   434.3M of 1G   131.1M of 1G      
+Luke-Shannons-Macbook-Pro:simple-pcf-application lshannon$ 
+````
+To scale the application
+````shell
+Luke-Shannons-Macbook-Pro:simple-pcf-application lshannon$ cf scale toronto-meetup-simple-app -i 2
+Scaling app toronto-meetup-simple-app in org toronto-pivotal-meetup / space development as lshannon@pivotal.io...
+OK
+Luke-Shannons-Macbook-Pro:simple-pcf-application lshannon$ cf scale toronto-meetup-simple-app
+Showing current scale of app toronto-meetup-simple-app in org toronto-pivotal-meetup / space development as lshannon@pivotal.io...
+OK
+
+memory: 1G
+disk: 1G
+instances: 2
+````
+# Basic Trouble Shooting
+
+To tail the log for this application.
+````shell
+Luke-Shannons-Macbook-Pro:simple-pcf-application lshannon$ cf logs toronto-meetup-simple-app
+Connected, tailing logs for app toronto-meetup-simple-app in org toronto-pivotal-meetup / space development as lshannon@pivotal.io...
+
+2015-05-26T23:46:35.73-0400 [RTR/1]      OUT toronto-meetup-simple-app.cfapps.io - [27/05/2015:03:46:35 +0000] "GET / HTTP/1.1" 200 0 32 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.152 Safari/537.36" 10.10.2.122:6906 x_forwarded_for:"135.23.188.178" vcap_request_id:7a1e358a-4726-4264-7097-28ca711dcb9a response_time:0.010188244 app_id:18ee4e21-014c-4f6c-8774-01286ce378b4
+````
+To view the recent log entries (the entire log not shown)
+````shell
+Luke-Shannons-Macbook-Pro:simple-pcf-application lshannon$ cf logs toronto-meetup-simple-app --recent
+Connected, dumping recent logs for app toronto-meetup-simple-app in org toronto-pivotal-meetup / space development as lshannon@pivotal.io...
+
+2015-05-26T23:41:17.95-0400 [API/4]      OUT Created app with guid 18ee4e21-014c-4f6c-8774-01286ce378b4
+2015-05-26T23:41:19.74-0400 [API/4]      OUT Updated app with guid 18ee4e21-014c-4f6c-8774-01286ce378b4 ({"route"=>"401cb77e-40f0-4e38-a1a6-450ed2ab1272"})
+2015-05-26T23:41:32.74-0400 [DEA/38]     OUT Got staging request for app with id 18ee4e21-014c-4f6c-8774-01286ce378b4
+2015-05-26T23:41:34.42-0400 [API/6]      OUT Updated app with guid 18ee4e21-014c-4f6c-8774-01286ce378b4 ({"state"=>"STARTED"})
+2015-05-26T23:41:34.69-0400 [STG/38]     OUT -----> Downloaded app package (11M)
+2015-05-26T23:41:36.10-0400 [STG/0]      OUT -----> Java Buildpack Version: v3.0 | https://github.com/cloudfoundry/java-buildpack.git#3bd15e1
+2015-05-26T23:41:37.42-0400 [STG/0]      OUT -----> Downloading Open Jdk JRE 1.8.0_45 from https://download.run.pivotal.io/openjdk/trusty/x86_64/openjdk-1.8.0_45.tar.gz (1.0s)
+2015-05-26T23:41:38.72-0400 [STG/0]      OUT        Expanding Open Jdk JRE to .java-buildpack/open_jdk_jre (1.3s)
+2015-05-26T23:41:38.82-0400 [STG/0]      OUT -----> Downloading Spring Auto Reconfiguration 1.7.0_RELEASE from https://download.run.pivotal.io/auto-reconfiguration/auto-reconfiguration-1.7.0_RELEASE.jar (0.0s)
+2015-05-26T23:41:40.34-0400 [STG/0]      ERR 
+2015-05-26T23:41:48.30-0400 [STG/38]     OUT -----> Uploading droplet (55M)
+2015-05-26T23:41:59.56-0400 [DEA/38]     OUT Starting app instance (index 0) with guid 18ee4e21-014c-4f6c-8774-01286ce378b4
+2015-05-26T23:42:04.29-0400 [App/0]      OUT 
+2015-05-26T23:42:04.29-0400 [App/0]      OUT   .   ____          _            __ _ _
+2015-05-26T23:42:04.29-0400 [App/0]      OUT  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+2015-05-26T23:42:04.29-0400 [App/0]      OUT ( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+2015-05-26T23:42:04.29-0400 [App/0]      OUT  \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+2015-05-26T23:42:04.29-0400 [App/0]      OUT   '  |____| .__|_| |_|_| |_\__, | / / / /
+2015-05-26T23:42:04.29-0400 [App/0]      OUT  =========|_|==============|___/=/_/_/_/
+2015-05-26T23:42:04.29-0400 [App/0]      OUT  :: Spring Boot ::        (v1.2.3.RELEASE)
+2015-05-26T23:42:04.41-0400 [App/0]      OUT 2015-05-27 03:42:04.407  INFO 29 --- [           main] pertySourceApplicationContextInitializer : Adding 'cloud' PropertySource to ApplicationContext
+2015-05-26T23:42:04.49-0400 [App/0]      OUT 2015-05-27 03:42:04.496  INFO 29 --- [           main] nfigurationApplicationContextInitializer : Adding cloud service auto-reconfiguration to ApplicationContext
+2015-05-26T23:42:04.51-0400 [App/0]      OUT 2015-05-27 03:42:04.519  INFO 29 --- [           main] i.p.fe.pcf.sample.SimplePcfApplication   : Starting SimplePcfApplication on 18mosst7b8t with PID 29 (/home/vcap/app started by vcap in /home/vcap/app)
+2015-05-26T23:42:04.59-0400 [App/0]      OUT 2015-05-27 03:42:04.595  INFO 29 --- [           main] ationConfigEmbeddedWebApplicationContext : Refreshing org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext@23774975: startup date [Wed May 27 03:42:04 UTC 2015]; root of context hierarchy
+2015-05-26T23:42:04.95-0400 [App/0]      OUT 2015-05-27 03:42:04.955  WARN 29 --- [           main] .i.s.PathMatchingResourcePatternResolver : Skipping [/home/vcap/app/.java-buildpack/spring_auto_reconfiguration/spring_auto_reconfiguration-1.7.0_RELEASE.jar] because it does not denote a directory
+
+````
+For more information on the the CLI commands:
+http://docs.pivotal.io/pivotalcf/devguide/installcf/whats-new-v6.html
 
 # Using the manifest file
 
