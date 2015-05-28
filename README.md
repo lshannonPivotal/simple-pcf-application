@@ -365,7 +365,7 @@ $CF_PASSWORD is a Build Parameter created for this job. $BUILD_NUMBER is a built
 The result of this is, if the code is successfully built with Maven, the artifact is pushed to PCF using the manifest file resulting in a fully configured and running application.
 
 # simple-data-pcf-application
-Similar to above, this is a Spring Boot Web application. However this application takes a String value through a GET request and stores it in a MySQL DB. It also provides an end point to get all the messages in the DB.
+Similar to above, this is a Spring Boot Web application. However this application takes a String value through an HTTP GET and stores it in a MySQL DB. It also provides an end point to get all the messages in the DB.
 
 Thanks to Spring Boot's JDBC starter, the connection details are specified in the application.properties file, along with the SQL.
 
