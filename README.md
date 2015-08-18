@@ -1,11 +1,17 @@
-# Introduction
+# This project is composed of 2 samples
+- simple-pcf-application: This is a simple Spring Boot Web application that can be used to explore working with PCF and integrating it with a tool like Jenkins
+- simple-data-pcf-application: This a data driven Spring Boot Application that can be used to explore binding a service
+
+
+# simple-pcf-application
+## Introduction
 This is a simple Spring Boot Rest Application for sample deployment to PCF. Some basic commands with PCF's Command Line Interface (CLI) are also explored.
 
-# Prerequisites
+## Prerequisites
 A PCF Account is required. This can be obtained free of charge by signing up at:
 run.pivotal.io
 
-# Creating the binary
+## Creating the binary
 To create a jar file to deploy to PCF run install or package with the skip tests flag (for brevity sake so are no tests in this sample).
 
 ```shell
@@ -51,7 +57,7 @@ Luke-Shannons-Macbook-Pro:simple-pcf-application lshannon$ mvn install -DskipTes
 [INFO] ------------------------------------------------------------------------
 ```
 
-# Configuring the client to deploy
+## Configuring the client to deploy
 The client can be obtained from run.pivotal.io after logging in to the run.pivotal.io console.
 Next the following steps can be executed to set the end point.
 ```shell
@@ -121,7 +127,7 @@ binary_buildpack       9          true      false    binary_buildpack-cached-v1.
 Luke-Shannons-Macbook-Pro:git lshannon$ 
 
 ````
-# Pushing the application
+## Pushing the application
 To get the application on to PCF.
 ````shell
 Luke-Shannons-Macbook-Pro:simple-pcf-application lshannon$ cf push toronto-meetup-simple-app  -p target/simple-pcf-application-0.0.1-SNAPSHOT.jar 
@@ -172,7 +178,7 @@ stack: cflinuxfs2
      state     since                    cpu    memory         disk           details   
 #0   running   2015-05-26 11:42:09 PM   0.0%   467.2M of 1G   131.1M of 1G   
 ```
-# Working with the CLI on the Running Application
+## Working with the CLI on the Running Application
 To verify it is running the apps command can be used
 ```shell
 Luke-Shannons-Macbook-Pro:simple-pcf-application lshannon$ cf apps
@@ -238,7 +244,7 @@ Deleting app toronto-meetup-simple-app in org toronto-pivotal-meetup / space dev
 OK
 ```
 
-# Basic Trouble Shooting
+## Basic Trouble Shooting
 
 To tail the log for this application.
 ```shell
@@ -282,7 +288,7 @@ Connected, dumping recent logs for app toronto-meetup-simple-app in org toronto-
 For more information on the the CLI commands:
 http://docs.pivotal.io/pivotalcf/devguide/installcf/whats-new-v6.html
 
-# Using the manifest file
+## Using the manifest file
 A manifest file can describe everything PCF needs to know about your application in one location.
 ```shell
 ---
@@ -345,6 +351,102 @@ stack: cflinuxfs2
 #0   running   2015-05-27 12:01:52 AM   0.0%   248.3M of 256M   131.1M of 1G      
 #1   running   2015-05-27 12:01:54 AM   0.0%   224.6M of 256M   131.1M of 1G 
 ```
-# Integrating with Jenkins
-Although there is a plugin for CF available for Jenkins, it did not work out of the box using the manifest file. More exploration needs to be done on this plugin. In the meantime if the CF CLI is install on the server running Jenkins, a Jenkins job can easily add a step to deploy the application for testing.
+## Integrating with Jenkins
+Although there is a plugin for CF available for Jenkins, it did not work out of the box using the manifest file. More exploration needs to be done on this plugin. In the meantime if the CF CLI is installed on the server running Jenkins, a Jenkins job can easily add a step to deploy the application for testing.
 
+In Post Build Steps, a shell script like the following can be executed:
+```shell
+export CF_HOME=`pwd`
+cf login -a api.run.pivotal.io -u lshannon@pivotal.io -p $CF_PASSWORD -o toronto-pivotal-meetup -s development
+cf push $BUILD_NUMBER-test -p simple-pcf-application/target/simple-pcf-application-0.0.1-SNAPSHOT.jar
+```
+$CF_PASSWORD is a Build Parameter created for this job. $BUILD_NUMBER is a built in Jenkins variable that is incremented with each build.
+
+The result of this is, if the code is successfully built with Maven, the artifact is pushed to PCF using the manifest file resulting in a fully configured and running application.
+
+# simple-data-pcf-application
+Similar to above, this is a Spring Boot Web application. However this application takes a String value through an HTTP GET and stores it in a MySQL DB. It also provides an end point to get all the messages in the DB.
+
+Thanks to Spring Boot's JDBC starter, the connection details are specified in the application.properties file, along with the SQL.
+
+```javascript
+spring.datasource.url=jdbc:mysql://localhost:3306/messages
+spring.datasource.username=root
+spring.datasource.password=
+spring.datasource.driver-class-name=com.mysql.jdbc.Driver
+insert.message=INSERT INTO message (message) VALUES (?)
+select.message=SELECT message FROM message
+schema.message=CREATE TABLE IF NOT exists message (id int(11) NOT NULL AUTO_INCREMENT, message varchar(45) DEFAULT NULL, PRIMARY KEY (`id`)) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+```
+
+For local testing a MySQL Database is required with a DB named messages created.
+
+Upon starting the application locally, a value can be added like this:
+http://127.0.0.1:8080/set?message=ice cube
+
+Values can be looked up like this:
+http://127.0.0.1:8080/get
+
+The manifest file contains the following configuration:
+```javascript
+applications:
+- name: simple-data-pcf-application
+  memory: 512M
+  path: target/simple-data-pcf-application-0.0.1-SNAPSHOT.jar
+  host: simple-data-pcf-application
+services:
+- mysql-datasource
+```
+A MySQL Service called 'mysql-datasource' needs to be created in the organization and space that the CLI is pointing too.
+
+With this manifest a simple 'cf push' will result in the following output:
+```shell
+piv-wifi-19-185:simple-data-pcf-application lshannon$ cf push
+Using manifest file /Users/lshannon/Documents/git/simple-pcf-application/simple-data-pcf-application/manifest.yml
+
+Updating app simple-data-pcf-application in org toronto-pivotal-meetup / space development as lshannon@pivotal.io...
+OK
+
+Using route simple-data-pcf-application.cfapps.io
+Uploading simple-data-pcf-application...
+Uploading app files from: /Users/lshannon/Documents/git/simple-pcf-application/simple-data-pcf-application/target/simple-data-pcf-application-0.0.1-SNAPSHOT.jar
+Uploading 574.6K, 96 files
+Done uploading               
+OK
+Binding service mysql-datasource to app simple-data-pcf-application in org toronto-pivotal-meetup / space development as lshannon@pivotal.io...
+OK
+
+Stopping app simple-data-pcf-application in org toronto-pivotal-meetup / space development as lshannon@pivotal.io...
+OK
+
+Starting app simple-data-pcf-application in org toronto-pivotal-meetup / space development as lshannon@pivotal.io...
+-----> Downloaded app package (13M)
+-----> Downloaded app buildpack cache (44M)
+-----> Java Buildpack Version: v3.0 | https://github.com/cloudfoundry/java-buildpack.git#3bd15e1
+-----> Downloading Open Jdk JRE 1.8.0_45 from https://download.run.pivotal.io/openjdk/trusty/x86_64/openjdk-1.8.0_45.tar.gz (found in cache)
+       Expanding Open Jdk JRE to .java-buildpack/open_jdk_jre (1.3s)
+-----> Downloading Spring Auto Reconfiguration 1.7.0_RELEASE from https://download.run.pivotal.io/auto-reconfiguration/auto-reconfiguration-1.7.0_RELEASE.jar (found in cache)
+
+-----> Uploading droplet (57M)
+
+0 of 1 instances running, 1 starting
+1 of 1 instances running
+
+App started
+
+
+OK
+
+App simple-data-pcf-application was started using this command `SERVER_PORT=$PORT $PWD/.java-buildpack/open_jdk_jre/bin/java -cp $PWD/.:$PWD/.java-buildpack/spring_auto_reconfiguration/spring_auto_reconfiguration-1.7.0_RELEASE.jar -Djava.io.tmpdir=$TMPDIR -XX:OnOutOfMemoryError=$PWD/.java-buildpack/open_jdk_jre/bin/killjava.sh -Xmx382293K -Xms382293K -XX:MaxMetaspaceSize=64M -XX:MetaspaceSize=64M -Xss995K org.springframework.boot.loader.JarLauncher`
+
+Showing health and status for app simple-data-pcf-application in org toronto-pivotal-meetup / space development as lshannon@pivotal.io...
+OK
+
+requested state: started
+instances: 1/1
+usage: 512M x 1 instances
+urls: simple-data-pcf-application.cfapps.io
+last uploaded: Wed May 27 21:20:38 UTC 2015
+stack: cflinuxfs2
+```
+PCF binds this application to the DB, binding in all relevant parameters at run time. The application runs in PCF, just as it did locally, with a simple push command.
