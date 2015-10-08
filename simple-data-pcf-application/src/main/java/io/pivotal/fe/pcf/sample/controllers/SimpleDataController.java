@@ -39,6 +39,9 @@ public class SimpleDataController {
 	@Value("${select.message}")
 	private String select;
 	
+	@Value("${delete.message}")
+	private String delete;
+	
 	
 	@Autowired
 	public void setDataSource(DataSource dataSource) {
@@ -50,8 +53,8 @@ public class SimpleDataController {
 	//locally test like this: http://127.0.0.1:8080/set?message=beans
 	@RequestMapping(value="/set", method=RequestMethod.GET)
     public @ResponseBody String setMessage(@RequestParam(value="message", required=true) String message) {
-		jdbcTemplate.update(insert, message);
-        return "Inserted Message into DB: " + message;
+		int id = jdbcTemplate.update(insert, message);
+        return "Inserted Message into DB: " + message + " it has an ID of " + id;
     }
 	
 	//http://127.0.0.1:8080/get
@@ -62,10 +65,18 @@ public class SimpleDataController {
 		        new RowMapper<String>() {
 		            public String mapRow(ResultSet rs, int rowNum) throws SQLException {
 		                String message = new String(rs.getString("message"));
-		                return message;
+		                Integer id = new Integer(rs.getInt("id"));
+		                return "Message: " + message + " Id: " + id;
 		            }
 		        });
         return messages.toString();
     }
+	
+	//locally test like this: http://127.0.0.1:8080/delete?id=?
+	@RequestMapping(value="/delete", method=RequestMethod.GET)
+	public @ResponseBody String deleteMessage(@RequestParam(value="id", required=true) int id) {
+		int row_count = jdbcTemplate.update(delete, id);
+	    return "Messages Deleted: " + row_count;
+	}
 
 }

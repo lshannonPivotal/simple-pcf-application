@@ -18,7 +18,8 @@ public class BasicController {
 	
 	@RequestMapping(method=RequestMethod.GET)
     public @ResponseBody String helloMeetUp() {
-        return "Hello Century Link Friends!";
+		String port = System.getenv("PORT");
+        return "Hello Century Link Friends! I am running on: " + port;
     }
 
 }
