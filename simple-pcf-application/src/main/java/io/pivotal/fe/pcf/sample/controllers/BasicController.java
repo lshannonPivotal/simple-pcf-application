@@ -18,7 +18,7 @@ public class BasicController {
 	
 	@RequestMapping(method=RequestMethod.GET)
     public @ResponseBody String helloMeetUp() {
-        return "Hello Toronto Pivotal User Group";
+        return "Hello Century Link Friends";
     }
 
 }
