@@ -57,6 +57,12 @@ public class SimpleDataController {
         return "Inserted Message into DB: " + message + " it has an ID of " + id;
     }
 	
+	//locally test like this: http://127.0.0.1:8080/set?message=beans
+		@RequestMapping(value="/", method=RequestMethod.GET)
+	    public @ResponseBody String home() {
+			return "Welcome to the app";
+	    }
+	
 	//http://127.0.0.1:8080/get
 	@RequestMapping(value="/get", method=RequestMethod.GET)
     public @ResponseBody String getMessages() {
