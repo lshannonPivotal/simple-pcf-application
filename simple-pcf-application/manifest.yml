@@ -1,6 +1,6 @@
 ---
 applications:
-- name: toronto-meetup-simple-app
+- name: tangerine-simple-app
   memory: 256M
   host: simple-app-luke
   instances: 2
