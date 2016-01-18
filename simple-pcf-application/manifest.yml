@@ -3,5 +3,5 @@ applications:
 - name: tangerine-simple-app
   memory: 256M
   host: simple-app-luke
-  instances: 2
+  instances: 1
   path: target/simple-pcf-application-0.0.1-SNAPSHOT.jar
