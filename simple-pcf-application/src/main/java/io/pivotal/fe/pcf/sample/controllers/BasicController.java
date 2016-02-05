@@ -18,7 +18,7 @@ public class BasicController {
 	
 	@RequestMapping(method=RequestMethod.GET)
     public @ResponseBody String helloMeetUp() {
-        return "Hello OTPP Friends! How Long to detect??";
+        return "Hello CIBC Friends! How Long to detect??";
     }
 
 }
