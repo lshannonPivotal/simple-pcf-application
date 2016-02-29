@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: io.pivotal.fe.demo.SimpleJpaDataPcfApplicationTests
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 3.757 sec - in io.pivotal.fe.demo.SimpleJpaDataPcfApplicationTests

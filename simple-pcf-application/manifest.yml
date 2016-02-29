@@ -1,6 +1,6 @@
 ---
 applications:
-- name: tangerine-simple-app
+- name: example-simple-app
   memory: 256M
   host: simple-app-luke
   instances: 1
