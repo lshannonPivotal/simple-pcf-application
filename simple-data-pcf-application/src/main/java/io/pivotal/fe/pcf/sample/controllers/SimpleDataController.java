@@ -60,7 +60,7 @@ public class SimpleDataController {
 	//locally test like this: http://127.0.0.1:8080/set?message=beans
 		@RequestMapping(value="/", method=RequestMethod.GET)
 	    public @ResponseBody String home() {
-			return "Welcome to the app Hazem: /set?message=beans, /get, /delete?id=?";
+			return "Welcome to the app Symcor: /set?message=beans, /get, /delete?id=?";
 	    }
 	
 	//http://127.0.0.1:8080/get
