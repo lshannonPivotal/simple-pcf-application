@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package io.pivotal.fe.pcf.sample.controllers;
 
@@ -15,10 +15,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 @Controller
 public class BasicController {
-	
+
 	@RequestMapping(method=RequestMethod.GET)
     public @ResponseBody String helloMeetUp() {
-        return "Hello Scotiabank - from Jenkins! Thanks listening";
+        return "Hello Shoppers Drugmart - delivered from Jenkins! Thanks Emmanuel";
     }
 
 }
