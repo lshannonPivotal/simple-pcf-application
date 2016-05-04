@@ -18,7 +18,7 @@ public class BasicController {
 
 	@RequestMapping(method=RequestMethod.GET)
     public @ResponseBody String helloMeetUp() {
-        return "Hello Telus - delivered from Jenkins! Thanks Aron!";
+        return "Hello Adam - delivered from Jenkins! Thanks Adam!";
     }
 
 }
