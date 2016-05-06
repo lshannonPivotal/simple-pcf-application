@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package io.pivotal.fe.pcf.sample.controllers;
 
@@ -23,32 +23,32 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 @Controller
 public class SimpleDataController {
-	
+
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
-	
+
 	@Value("${insert.message}")
 	private String insert;
-	
+
 	@Value("${db.message}")
 	private String db_create;
-	
+
 	@Value("${schema.message}")
 	private String schema_create;
-	
+
 	@Value("${select.message}")
 	private String select;
-	
+
 	@Value("${delete.message}")
 	private String delete;
-	
-	
+
+
 	@Autowired
 	public void setDataSource(DataSource dataSource) {
 	    this.jdbcTemplate = new JdbcTemplate(dataSource);
 	    jdbcTemplate.execute(schema_create);
 	}
-	
+
 
 	//locally test like this: http://127.0.0.1:8080/set?message=beans
 	@RequestMapping(value="/set", method=RequestMethod.GET)
@@ -56,13 +56,13 @@ public class SimpleDataController {
 		int id = jdbcTemplate.update(insert, message);
         return "Inserted Message into DB: " + message + " it has an ID of " + id;
     }
-	
+
 	//locally test like this: http://127.0.0.1:8080/set?message=beans
 		@RequestMapping(value="/", method=RequestMethod.GET)
 	    public @ResponseBody String home() {
-			return "Welcome to the app Scotiabank: /set?message=beans, /get, /delete?id=?";
+			return "Welcome to the app Phil (this is a demo): /set?message=beans, /get, /delete?id=?";
 	    }
-	
+
 	//http://127.0.0.1:8080/get
 	@RequestMapping(value="/get", method=RequestMethod.GET)
     public @ResponseBody String getMessages() {
@@ -77,7 +77,7 @@ public class SimpleDataController {
 		        });
         return messages.toString();
     }
-	
+
 	//locally test like this: http://127.0.0.1:8080/delete?id=?
 	@RequestMapping(value="/delete", method=RequestMethod.GET)
 	public @ResponseBody String deleteMessage(@RequestParam(value="id", required=true) int id) {
